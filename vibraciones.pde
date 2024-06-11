@@ -1,5 +1,6 @@
 int vueltas;
-
+float[] valoresParaElCiclo = new float[4];
+float[] modificadoresParaElCiclo = new float[3];
 Ciclo ciclo;
 
 void setup()
@@ -16,25 +17,33 @@ void draw()
 
   translate(height / 2, width / 2);
 
-  // A, B, C, Puntos
-  float[] valoresParaElCiclo = {107, 23.3, 25.143, (TWO_PI / 56.91)};
-  // modA, modB, modC
-  float[] modificadoresParaElCiclo = {4.0, -0.280, 0.01436};
+  valoresParaElCiclo[0] = 163;              // A
+  valoresParaElCiclo[1] = 0.0;             // B
+  valoresParaElCiclo[2] = 24.634;           // C            
+  valoresParaElCiclo[3] = TWO_PI / 65.50;   // ptos
 
-  vueltas = 85;
+  modificadoresParaElCiclo[0] = 2.6;        // modA
+  modificadoresParaElCiclo[1] = 1.068;     // modB
+  modificadoresParaElCiclo[2] = 0.01179;    // modC   
+
+  vueltas = 57;
 
   beginShape();
 
-  ciclo = new Ciclo(valoresParaElCiclo, modificadoresParaElCiclo);
+  ciclo = new Ciclo(valoresParaElCiclo, modificadoresParaElCiclo, vueltas);
 
-  for (int i = 0; i < vueltas; i++)
-  {
-    ciclo.dibujar();
-    ciclo.actualizar();
-  }
+  ciclo.dibujar();
+ 
+  modificadoresParaElCiclo[1] = -1.067;     // modB
+
+  ciclo.dibujar();
 
   endShape();
 }
+
+// ==========================================================================
+// ==========================================================================
+// ==========================================================================
 
 void drawGrid(int gridSize) {
   stroke(200);
@@ -55,21 +64,23 @@ void drawGrid(int gridSize) {
 
 class Ciclo
 {
-  float[] VALS;
-  float[] MODS;
-  int contador = 0;
+  float[] VALS; // valores
+  float[] MODS; // modificadores
+  int VLTS;
+  // int contador = 0
 
-  Ciclo(float[] valores, float[] modificadores)
+  Ciclo(float[] valores, float[] modificadores, int vueltas)
   {
     VALS = valores;
     MODS = modificadores;
+    VLTS = vueltas;
   }
 
-  void dibujar()
+  void dibujaCiclo()
   {
-    contador = 0;
     for (float i = 0; i <= TWO_PI; i += VALS[3])
     {
+      // R = A + B * cos(C * i)
       float R = VALS[0] + VALS[1] * cos(i * VALS[2]);
       float x = R * cos(i);
       float y = R * sin(i);
@@ -77,9 +88,7 @@ class Ciclo
       //strokeWeight(5);
       //point(x, y);
       //strokeWeight(1);
-      contador++;
     }
-    println(contador);
   }
 
   void actualizar()
@@ -87,5 +96,14 @@ class Ciclo
     VALS[0] += MODS[0];
     VALS[1] += MODS[1];
     VALS[2] += MODS[2];
+  }
+
+  void dibujar()
+  {
+    for (int i = 0; i < VLTS; i++)
+    {
+      ciclo.dibujaCiclo();
+      ciclo.actualizar();
+    }
   }
 }
