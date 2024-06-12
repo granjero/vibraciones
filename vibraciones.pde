@@ -1,8 +1,8 @@
 import processing.svg.*;
 
 int vueltas;
-float[] valoresParaElCiclo = new float[4];
-float[] modificadoresParaElCiclo = new float[3];
+float[] valores = new float[4];
+float[] modificadores = new float[3];
 boolean dibujar;
 
 Ciclo ciclo;
@@ -11,18 +11,19 @@ void setup()
 {
   size(1000, 1000);
   noFill();
-  //noLoop();
+  frameRate(1);
+  noLoop();
 }
 
 void draw()
 {
-  valoresParaElCiclo[0] = 64;              // A
-  valoresParaElCiclo[1] = 46.2;             // B
-  valoresParaElCiclo[2] = 23.420;           // C
-  valoresParaElCiclo[3] = TWO_PI / 53.90;   // ptos
-  modificadoresParaElCiclo[0] = 6.8;        // modA
-  modificadoresParaElCiclo[1] = -0.837;     // modB
-  modificadoresParaElCiclo[2] = 0.02516;    // modC
+  valores[0] = 64;               // A
+  valores[1] = 47.8;             // B
+  valores[2] = 23.420;           // C
+  valores[3] = TWO_PI / 53.90;   // ptos
+  modificadores[0] = 2.2;        // modA
+  modificadores[1] = -0.868;     // modB
+  modificadores[2] = 0.02516;    // modC
   vueltas = 55;
 
   if (dibujar)
@@ -34,21 +35,35 @@ void draw()
   background(255);
   translate(height / 2, width / 2);
   beginShape();
+  stroke(0, 255, 0);
 
-  ciclo = new Ciclo(valoresParaElCiclo, modificadoresParaElCiclo, vueltas);
-  ciclo.dibujar();
-  
-  //-------
-  
-  modificadoresParaElCiclo[0] = 6.8;        // modA
-  modificadoresParaElCiclo[1] = -0.040;     // modB
-  vueltas = 15;
-  
-  ciclo = new Ciclo(valoresParaElCiclo, modificadoresParaElCiclo, vueltas);
-  ciclo.dibujar();
-  
+  print(valores[0] + " - ");
+  print(valores[1] + " - ");
+  println(valores[2]);
+
+  ciclo = new Ciclo(valores, modificadores, vueltas);
+  valores = ciclo.dibujar();
   endShape();
-  
+  beginShape();
+  print(valores[0] + " - ");
+  print(valores[1] + " - ");
+  println(valores[2]);
+
+  //-------
+  //valores[0] = 64;               // A
+  //valores[1] = 46.2;             // B
+  //valores[2] = 23.420;           // C
+  modificadores[0] = 5.8;        // modA
+  modificadores[1] = -0.040;     // modB
+  modificadores[2] = 0.02516;    // modC
+
+  vueltas = 34;
+  stroke(255, 0, 0);
+  ciclo = new Ciclo(valores, modificadores, vueltas);
+  ciclo.dibujar();
+
+  endShape();
+
   if (dibujar)
   {
     endRecord();
@@ -106,20 +121,23 @@ class Ciclo
     }
   }
 
-  void actualizar()
+  float[] actualizar()
   {
     VALS[0] += MODS[0];
     VALS[1] += MODS[1];
     VALS[2] += MODS[2];
+    return VALS;
   }
 
-  void dibujar()
+  float[] dibujar()
   {
+    float[] valores = new float[2];
     for (int i = 0; i < VLTS; i++)
     {
-      ciclo.actualizar();
-      ciclo.dibujaCiclo();
+      valores = this.actualizar();
+      this.dibujaCiclo();
     }
+    return valores;
   }
 }
 
