@@ -1,6 +1,10 @@
+import processing.svg.*;
+
 int vueltas;
 float[] valoresParaElCiclo = new float[4];
 float[] modificadoresParaElCiclo = new float[3];
+boolean dibujar;
+
 Ciclo ciclo;
 
 void setup()
@@ -12,33 +16,44 @@ void setup()
 
 void draw()
 {
+  valoresParaElCiclo[0] = 64;              // A
+  valoresParaElCiclo[1] = 46.2;             // B
+  valoresParaElCiclo[2] = 23.420;           // C
+  valoresParaElCiclo[3] = TWO_PI / 53.90;   // ptos
+  modificadoresParaElCiclo[0] = 6.8;        // modA
+  modificadoresParaElCiclo[1] = -0.837;     // modB
+  modificadoresParaElCiclo[2] = 0.02516;    // modC
+  vueltas = 55;
+
+  if (dibujar)
+  {
+    String filename = year() + "" + nf(month(), 2) + "" + nf(day(), 2) + "_" + millis() +".svg";
+    beginRecord(SVG, filename);
+  }
+
   background(255);
-  //drawGrid(10);
-
   translate(height / 2, width / 2);
-
-  valoresParaElCiclo[0] = 163;              // A
-  valoresParaElCiclo[1] = 0.0;             // B
-  valoresParaElCiclo[2] = 24.634;           // C            
-  valoresParaElCiclo[3] = TWO_PI / 65.50;   // ptos
-
-  modificadoresParaElCiclo[0] = 2.6;        // modA
-  modificadoresParaElCiclo[1] = 1.068;     // modB
-  modificadoresParaElCiclo[2] = 0.01179;    // modC   
-
-  vueltas = 57;
-
   beginShape();
 
   ciclo = new Ciclo(valoresParaElCiclo, modificadoresParaElCiclo, vueltas);
-
   ciclo.dibujar();
- 
-  modificadoresParaElCiclo[1] = -1.067;     // modB
-
+  
+  //-------
+  
+  modificadoresParaElCiclo[0] = 6.8;        // modA
+  modificadoresParaElCiclo[1] = -0.040;     // modB
+  vueltas = 15;
+  
+  ciclo = new Ciclo(valoresParaElCiclo, modificadoresParaElCiclo, vueltas);
   ciclo.dibujar();
-
+  
   endShape();
+  
+  if (dibujar)
+  {
+    endRecord();
+    dibujar = false;
+  }
 }
 
 // ==========================================================================
@@ -102,8 +117,14 @@ class Ciclo
   {
     for (int i = 0; i < VLTS; i++)
     {
-      ciclo.dibujaCiclo();
       ciclo.actualizar();
+      ciclo.dibujaCiclo();
     }
   }
+}
+
+void mouseClicked()
+{
+  dibujar = true;
+  println("click");
 }
