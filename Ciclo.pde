@@ -10,38 +10,63 @@ class Ciclo
     MODIFICADORES = modificadores;
   }
 
-  void unCiclo(float[] valores)
+  void unCiclo(float[] valores) // dibuja un ciclo
   {
-    for (float i = 0; i <= TWO_PI; i += valores[3])
+    beginShape();
+    for (float x = 0; x <= width; x += width / valores[3])
     {
-      // R = A + B * cos(C * i)
-      float R = valores[0] + valores[1] * cos(i * valores[2]);
-      float x = R * cos(i);
-      float y = R * sin(i);
-      curveVertex(x, y);
-      //println("porcion ciclo " + i);
+      float R = valores[0] + valores[1] * cos(x * valores[2]);
+      float y = R * sin(x);
+      curveVertex(x, y + VALORES[4]);
     }
+    endShape();
   }
 
-  void actualizar(int llave)
+  void actualizar(int llave) // aplica los modificadores a los valores
   {
     this.VALORES[0] += this.MODIFICADORES[llave][0];
     this.VALORES[1] += this.MODIFICADORES[llave][1];
     this.VALORES[2] += this.MODIFICADORES[llave][2];
+    this.VALORES[4] += this.MODIFICADORES[llave][4];
+    //this.modificaModificadores(llave, 1);
   }
 
-  void dibujar()
+  //void modificaModificadores(int llave, int llaveValor) // aplica el porcentaje de modificacion
+  //{
+  //  float porc = this.MODIFICADORES[llave][4];
+  //  this.MODIFICADORES[llave][llaveValor] = this.MODIFICADORES[llave][llaveValor] * porc;
+  //}
+
+  void dibujar() // dibuja el coso
   {
     for (int i = 0; i < this.MODIFICADORES.length; i++)
     {
       for (int j = 0; j < this.MODIFICADORES[i][3]; j++)
-      {        
+      {
         this.actualizar(i);
         this.unCiclo(this.VALORES);
       }
     }
   }
 
+  String nombreArchivo ()
+  {
+    String nombre = year() + "" +
+      nf(month(), 2) + "" +
+      nf(day(), 2) + "_" +
+      nf(hour(), 2) + "" +
+      nf(minute(), 2) + "" +
+      nf(second(), 2) + "_vals_" +
+      join(nf(this.VALORES), "_") + "_mods_";
+      
+    for (int i = 0; i < this.MODIFICADORES.length; i++)
+    {
+      if (this.MODIFICADORES[i][3] == 0) break;
+      nombre = nombre + join(nf(this.MODIFICADORES[i]), "_");
+      nombre = nombre + " -" + i + "- ";
+    }
+    return nombre + ".svg";
+  }
 
   void drawGrid(int gridSize) {
     stroke(200);

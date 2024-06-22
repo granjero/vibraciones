@@ -1,1 +1,1 @@
-# vibraciones
+# vibraciones paralelas (digamos)
